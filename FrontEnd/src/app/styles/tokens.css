@@ -1,0 +1,13 @@
+﻿:root {
+  --bg: #f3efe7;
+  --surface: #fffaf2;
+  --surface-strong: #efe5d6;
+  --text: #1f1a14;
+  --text-muted: #6d6257;
+  --line: #d9cbb7;
+  --brand: #00686f;
+  --brand-weak: #d3efef;
+  --radius: 16px;
+  --shadow: 0 14px 40px rgb(31 26 20 / 12%);
+}
+
