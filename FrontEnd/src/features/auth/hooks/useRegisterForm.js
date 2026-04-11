@@ -1,0 +1,138 @@
+﻿import { useState } from 'react'
+import { registerUser } from '../api/registerUser'
+import {
+  emptyRegisterErrors,
+  hasValidationErrors,
+  validateEmail,
+  validatePassword,
+  validateRegisterForm,
+  validateRepeatPassword,
+  validateUsername,
+} from '../validation/registerValidation'
+
+const initialForm = {
+  username: '',
+  email: '',
+  password: '',
+  repeatPassword: '',
+}
+
+export function useRegisterForm() {
+  const [form, setForm] = useState(initialForm)
+  const [errors, setErrors] = useState(emptyRegisterErrors)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [submitSuccess, setSubmitSuccess] = useState('')
+
+  function handleUsernameChange(value) {
+    setForm((prev) => ({ ...prev, username: value }))
+
+    if (errors.username) {
+      setErrors((prev) => ({ ...prev, username: validateUsername(value) }))
+    }
+  }
+
+  function handleUsernameBlur() {
+    setErrors((prev) => ({ ...prev, username: validateUsername(form.username) }))
+  }
+
+  function handleEmailChange(value) {
+    setForm((prev) => ({ ...prev, email: value }))
+
+    if (errors.email) {
+      setErrors((prev) => ({ ...prev, email: validateEmail(value) }))
+    }
+  }
+
+  function handleEmailBlur() {
+    setErrors((prev) => ({ ...prev, email: validateEmail(form.email) }))
+  }
+
+  function handlePasswordChange(value) {
+    setForm((prev) => ({ ...prev, password: value }))
+
+    // Revalida siempre password para que el rojo desaparezca en cuanto cumpla.
+    // Si repeatPassword ya tiene contenido, también se revalida en tiempo real.
+    setErrors((prev) => ({
+      ...prev,
+      password: validatePassword(value),
+      repeatPassword: form.repeatPassword
+        ? validateRepeatPassword(value, form.repeatPassword)
+        : prev.repeatPassword,
+    }))
+  }
+
+  function handlePasswordBlur(value = form.password) {
+    setErrors((prev) => ({
+      ...prev,
+      password: validatePassword(value),
+      repeatPassword: validateRepeatPassword(value, form.repeatPassword),
+    }))
+  }
+
+  function handleRepeatPasswordChange(value) {
+    setForm((prev) => ({ ...prev, repeatPassword: value }))
+
+    // Revalida siempre mientras escribe en repeatPassword para que esté en rojo
+    // hasta que coincida con password.
+    setErrors((prev) => ({
+      ...prev,
+      repeatPassword: validateRepeatPassword(form.password, value),
+    }))
+  }
+
+  function handleRepeatPasswordBlur(value = form.repeatPassword) {
+    setErrors((prev) => ({
+      ...prev,
+      repeatPassword: validateRepeatPassword(form.password, value),
+    }))
+  }
+
+  async function handleSubmit() {
+    const nextErrors = validateRegisterForm(form)
+    setErrors(nextErrors)
+    setSubmitError('')
+    setSubmitSuccess('')
+
+    if (hasValidationErrors(nextErrors)) {
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await registerUser({
+        username: form.username,
+        email: form.email,
+        password: form.password,
+      })
+      setSubmitSuccess('Usuario registrado correctamente.')
+    } catch (error) {
+      setSubmitError(error.message ?? 'No se pudo completar la petición')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return {
+    username: form.username,
+    email: form.email,
+    password: form.password,
+    repeatPassword: form.repeatPassword,
+    usernameError: errors.username,
+    emailError: errors.email,
+    passwordError: errors.password,
+    repeatPasswordError: errors.repeatPassword,
+    submitting,
+    submitError,
+    submitSuccess,
+    handleUsernameChange,
+    handleUsernameBlur,
+    handleEmailChange,
+    handleEmailBlur,
+    handlePasswordChange,
+    handlePasswordBlur,
+    handleRepeatPasswordChange,
+    handleRepeatPasswordBlur,
+    handleSubmit,
+  }
+}
