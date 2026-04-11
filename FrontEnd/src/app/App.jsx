@@ -1,31 +1,16 @@
-﻿import { useHashRoute } from '@/shared/hooks/useHashRoute'
-import { navigationItems } from '@/shared/config/navigation'
-import { AppShell } from '@/shared/layout/AppShell'
-import { HomePage } from '@/pages/HomePage'
-import { PlanningPage } from '@/pages/PlanningPage'
-import { MetricsPage } from '@/pages/MetricsPage'
-import { NotFoundPage } from '@/pages/NotFoundPage'
-
-const routeMap = {
-  '/inicio': HomePage,
-  '/planificacion': PlanningPage,
-  '/metricas': MetricsPage,
-}
+﻿import { useState } from 'react'
+import { MainLayout } from '../components/layout/MainLayout'
+import { RegisterPage } from '../pages/RegisterPage'
+import { ROUTES } from './routes'
 
 function App() {
-  const { route, navigate } = useHashRoute('/inicio')
-  const PageComponent = routeMap[route] ?? NotFoundPage
+  const [route] = useState(ROUTES.register)
 
   return (
-    <AppShell
-      currentRoute={route}
-      navigationItems={navigationItems}
-      onNavigate={navigate}
-    >
-      <PageComponent />
-    </AppShell>
+    <MainLayout>
+      {route === ROUTES.register && <RegisterPage />}
+    </MainLayout>
   )
 }
 
 export default App
-

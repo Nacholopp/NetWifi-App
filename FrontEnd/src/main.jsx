@@ -1,9 +1,20 @@
 ﻿import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import App from './app/App.jsx'
+import './app/styles/global.css'
+
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+})
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
   </StrictMode>,
 )
