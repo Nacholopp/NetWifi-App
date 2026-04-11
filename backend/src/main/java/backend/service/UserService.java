@@ -25,6 +25,10 @@ public class UserService implements UserServiceInterface{
 
     @Override
     public ProfileResponse saveProfile(RegisterRequest registerRequest) {
+        if (appUserRepository.existsByUsername(registerRequest.username())) {
+            throw new DataIntegrityViolationException("Ya existe un usuario con ese username");
+        }
+
         if (appUserRepository.existsByEmail(registerRequest.email())) {
             throw new DataIntegrityViolationException("Ya existe un usuario con ese email");
         }

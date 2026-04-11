@@ -6,8 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-//Es record porque es inmutable, solo transporta datos
-
+// Es record porque es inmutable, solo transporta datos
 public record RegisterRequest(
 
     @NotBlank
@@ -16,7 +15,10 @@ public record RegisterRequest(
     @NotBlank @Email
     String email,
 
-    @NotBlank @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "La contraseña debe tener al menos 8 caracteres, incluyendo letras y números")
+    @NotBlank @Pattern(
+        regexp = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$",
+        message = "La contrasena debe tener al menos 8 caracteres, incluyendo letras y numeros"
+    )
     String password,
 
     @NotNull
