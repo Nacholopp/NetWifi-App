@@ -39,7 +39,7 @@ export function RegisterPage() {
         alignItems: 'center',
         justifyContent: 'center',
         px: 2,
-        backgroundColor: '#d5dae1'
+        backgroundColor: '#c6cdd8'
       }}
     >
       <Card
@@ -47,8 +47,8 @@ export function RegisterPage() {
           width: '35%',
           maxWidth: 590,
           borderRadius: 5,
-          border: '1px solid #d1d5db',
-          boxShadow: '0 18px 50px rgba(25, 118, 210, 0.18)',
+          border: '1px solid #ffffff',
+          boxShadow: '0 25px 80px rgba(0, 0, 0, 0.18)',
         }}
       >
         <CardContent>
