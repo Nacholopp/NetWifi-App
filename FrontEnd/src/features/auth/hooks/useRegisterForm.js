@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { registerUser } from '../api/registerUser'
 import {
   emptyRegisterErrors,
@@ -17,7 +17,7 @@ const initialForm = {
   repeatPassword: '',
 }
 
-export function useRegisterForm() {
+export function useRegisterForm({ onSuccess } = {}) {
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState(emptyRegisterErrors)
   const [submitting, setSubmitting] = useState(false)
@@ -51,8 +51,6 @@ export function useRegisterForm() {
   function handlePasswordChange(value) {
     setForm((prev) => ({ ...prev, password: value }))
 
-    // Revalida siempre password para que el rojo desaparezca en cuanto cumpla.
-    // Si repeatPassword ya tiene contenido, también se revalida en tiempo real.
     setErrors((prev) => ({
       ...prev,
       password: validatePassword(value),
@@ -73,8 +71,6 @@ export function useRegisterForm() {
   function handleRepeatPasswordChange(value) {
     setForm((prev) => ({ ...prev, repeatPassword: value }))
 
-    // Revalida siempre mientras escribe en repeatPassword para que esté en rojo
-    // hasta que coincida con password.
     setErrors((prev) => ({
       ...prev,
       repeatPassword: validateRepeatPassword(form.password, value),
@@ -100,14 +96,15 @@ export function useRegisterForm() {
 
     try {
       setSubmitting(true)
-      await registerUser({
+      const data = await registerUser({
         username: form.username,
         email: form.email,
         password: form.password,
       })
       setSubmitSuccess('Usuario registrado correctamente.')
+      onSuccess?.(data ?? { username: form.username })
     } catch (error) {
-      setSubmitError(error.message ?? 'No se pudo completar la petición')
+      setSubmitError(error.message ?? 'No se pudo completar la peticion')
     } finally {
       setSubmitting(false)
     }

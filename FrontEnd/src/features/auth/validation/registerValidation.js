@@ -8,6 +8,11 @@ export const emptyRegisterErrors = {
   repeatPassword: '',
 }
 
+export const emptyLoginErrors = {
+  email: '',
+  password: '',
+}
+
 export function validateUsername(value) {
   if (!value.trim()) {
     return 'El username es obligatorio'
@@ -69,4 +74,11 @@ export function validateRegisterForm(form) {
 
 export function hasValidationErrors(errors) {
   return Object.values(errors).some(Boolean)
+}
+
+export function validateLoginForm(form) {
+  return {
+    email: validateEmail(form.email),
+    password: validatePassword(form.password),
+  }
 }

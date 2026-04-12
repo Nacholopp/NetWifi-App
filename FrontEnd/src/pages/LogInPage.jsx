@@ -1,4 +1,4 @@
-﻿import Alert from '@mui/material/Alert'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
@@ -6,32 +6,24 @@ import CardContent from '@mui/material/CardContent'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { ROUTES } from '../app/routes'
-import { useRegisterForm } from '../features/auth/hooks/useRegisterForm'
+import { useLoginForm } from '../features/auth/hooks/useLoginForm'
 import { PasswordField, TextFieldEmailUsername } from '../shared/ui/FormRegister'
 
-export function RegisterPage({ onNavigate, onAuthSuccess }) {
+export function LoginPage({ onNavigate, onAuthSuccess }) {
   const {
-    username,
     email,
     password,
-    repeatPassword,
-    usernameError,
     emailError,
     passwordError,
-    repeatPasswordError,
     submitting,
     submitError,
     submitSuccess,
-    handleUsernameChange,
-    handleUsernameBlur,
     handleEmailChange,
     handleEmailBlur,
     handlePasswordChange,
     handlePasswordBlur,
-    handleRepeatPasswordChange,
-    handleRepeatPasswordBlur,
     handleSubmit,
-  } = useRegisterForm({ onSuccess: onAuthSuccess })
+  } = useLoginForm({ onSuccess: onAuthSuccess })
 
   return (
     <Box
@@ -41,7 +33,7 @@ export function RegisterPage({ onNavigate, onAuthSuccess }) {
         alignItems: 'center',
         justifyContent: 'center',
         px: 2,
-        backgroundColor: '#e2e3e7'
+        backgroundColor: '#e2e3e7',
       }}
     >
       <Card
@@ -55,25 +47,15 @@ export function RegisterPage({ onNavigate, onAuthSuccess }) {
       >
         <CardContent>
           <Box sx={{ display: 'grid', gap: 2 }}>
-            <Typography variant='h6' sx={{ fontWeight: 700, gap: 1, mb: 0.0005 }}>
-              Sign In
+            <Typography variant='h6' sx={{ fontWeight: 700, mb: 0.0005 }}>
+              Log In
             </Typography>
-            <Typography variant='h10' sx={{ fontWeight: 100, gap: 1, mb: 1 }}>
-              Crea una cuenta de NetWify
+            <Typography variant='body2' sx={{ fontWeight: 300, mb: 1 }}>
+              Accede a tu cuenta de NetWifi
             </Typography>
 
             {submitError ? <Alert severity='error'>{submitError}</Alert> : null}
             {submitSuccess ? <Alert severity='success'>{submitSuccess}</Alert> : null}
-
-            <TextFieldEmailUsername
-              label='Username*'
-              type='text'
-              value={username}
-              onChange={(e) => handleUsernameChange(e.target.value)}
-              onBlur={handleUsernameBlur}
-              error={usernameError}
-              helperText={usernameError}
-            />
 
             <TextFieldEmailUsername
               label='Email*'
@@ -89,18 +71,9 @@ export function RegisterPage({ onNavigate, onAuthSuccess }) {
               label='Password*'
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
-              onBlur={(e) => handlePasswordBlur(e.target.value)}
+              onBlur={handlePasswordBlur}
               error={passwordError}
               helperText={passwordError}
-            />
-
-            <PasswordField
-              label='Repeat password*'
-              value={repeatPassword}
-              onChange={(e) => handleRepeatPasswordChange(e.target.value)}
-              onBlur={(e) => handleRepeatPasswordBlur(e.target.value)}
-              error={repeatPasswordError}
-              helperText={repeatPasswordError}
             />
 
             <Button
@@ -119,27 +92,22 @@ export function RegisterPage({ onNavigate, onAuthSuccess }) {
                 py: 1.2,
                 textTransform: 'none',
                 fontSize: '1rem',
-                '& .arrow': { opacity: 0, ml: 0.5, transition: 'opacity .2s ease' },
-                '&:hover .arrow': { opacity: 1 },
               }}
             >
-              {submitting ? 'Accediendo...' : 'Create Account'}
-              <span className='arrow'>→</span>
+              {submitting ? 'Accediendo...' : 'Acceder'}
             </Button>
 
             <Typography variant='body2' sx={{ textAlign: 'center', mt: 1 }}>
-              Si ya tienes cuenta,{' '}
+              Si no tienes cuenta,{' '}
               <Link
                 component='button'
                 type='button'
                 underline='hover'
-                onClick={() => onNavigate?.(ROUTES.login)}
+                onClick={() => onNavigate?.(ROUTES.register)}
               >
-                accede
+                registrate
               </Link>
             </Typography>
-
-
           </Box>
         </CardContent>
       </Card>

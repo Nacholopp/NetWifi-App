@@ -1,5 +1,7 @@
-﻿:root {
-  font-family: 'Segoe UI', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 }
@@ -9,10 +11,48 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: #1f2937;
-  
 }
 
 * {
   box-sizing: border-box;
-  
+}
+
+.layout {
+  min-height: 100vh;
+  background-color: #e2e3e7;
+}
+
+.navbar {
+  height: 55px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #e2e3e7;
+}
+
+.navbar__brand {
+  justify-self: start;
+  font-size: 1.25rem;
+}
+
+.navbar__center {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  justify-self: center;
+}
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 16px;
+}
+
+.navbar__brand .MuiButton-root,
+.navbar__center .MuiButton-root,
+.navbar__right .MuiButton-root {
+  font-size: 1.16rem;
+  font-weight: 700;
 }
