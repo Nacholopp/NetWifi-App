@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { MainLayout } from '../components/layout/MainLayout'
 import { HomePage } from '../pages/HomePage'
 import { LoginPage } from '../pages/LogInPage'
-import { ProjectsPage } from '../pages/ProjectsPage'
 import { RegisterPage } from '../pages/RegisterPage'
 import { WifiTestPage } from '../pages/WifiTestPage'
 import { ROUTES } from './routes'
@@ -38,10 +37,9 @@ function App() {
       currentUser={authUser}
       variant={route === ROUTES.register ? 'register' : 'default'}
     >
-      {route === ROUTES.home && <HomePage />}
+      {route === ROUTES.home && <HomePage currentUser={authUser} onNavigate={setRoute} />}
       {route === ROUTES.login && <LoginPage onNavigate={setRoute} onAuthSuccess={handleAuthSuccess} />}
       {route === ROUTES.register && <RegisterPage onNavigate={setRoute} onAuthSuccess={handleAuthSuccess} />}
-      {route === ROUTES.projects && <ProjectsPage />}
       {route === ROUTES.wifiTest && <WifiTestPage />}
     </MainLayout>
   )

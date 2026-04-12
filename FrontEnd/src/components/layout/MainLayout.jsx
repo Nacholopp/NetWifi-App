@@ -99,10 +99,10 @@ export function MainLayout({
           <Button
             variant='text'
             disableRipple
-            onClick={() => onNavigate?.(ROUTES.projects)}
-            sx={[navActionSx, currentRoute === ROUTES.projects && navActionActiveSx]}
+            onClick={() => onNavigate?.(ROUTES.home)}
+            sx={[navActionSx, currentRoute === ROUTES.home && navActionActiveSx]}
           >
-            Proyectos
+            Home
           </Button>
 
           <Button
