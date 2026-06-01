@@ -60,6 +60,9 @@ export function WifiTestPage() {
 
           <Box sx={{ mt: 3, display: 'grid', gap: 1 }}>
             <Typography>
+              <strong>Potencia:</strong> {formatDbm(wifiSignal?.dbm ?? wifiSignal?.rssiDbm)}
+            </Typography>
+            <Typography>
               <strong>Red:</strong> {wifiSignal?.ssid ?? '--'}
             </Typography>
             <Typography>

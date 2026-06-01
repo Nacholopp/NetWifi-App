@@ -32,8 +32,8 @@ def get_field(fields, *keys):
 def estimate_dbm(signal_percent):
     if signal_percent is None:
         return None
-
-    return round((signal_percent / 2) - 100)
+    clamped = max(0, min(100, signal_percent))
+    return round((clamped / 2) - 100)
 
 
 def quality_from_dbm(dbm):
@@ -93,16 +93,19 @@ def read_wifi():
         key, value = line.split(":", 1)
         fields[normalize_key(key)] = value.strip()
 
+    state = get_field(fields, "state", "estado")
+    connected = str(state or "").strip().lower() in ("connected", "conectado")
     signal_percent = first_number(get_field(fields, "signal", "senal"))
     channel = first_number(get_field(fields, "channel", "canal"))
     dbm = estimate_dbm(signal_percent)
 
     return {
-        "connected": bool(fields.get("ssid")),
-        "ssid": fields.get("ssid"),
+        "connected": connected,
+        "ssid": get_field(fields, "ssid"),
         "band": band_from_channel(channel),
         "signalPercent": signal_percent,
         "rssiDbm": dbm,
+        "dbm": dbm,
         "rssiEstimated": True,
         "rxMbps": first_number(
             get_field(fields, "receive rate (mbps)", "velocidad de recepcion (mbps)")
