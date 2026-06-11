@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import backend.model.dto.ProfileResponse;
@@ -14,6 +15,7 @@ import backend.model.dto.AuthResponse;
 import backend.model.dto.LoginRequest;
 import backend.model.entity.AppUser;
 import backend.repository.AppUserRepository;
+import backend.repository.ProjectRepository;
 
 
 
@@ -23,13 +25,15 @@ import backend.repository.AppUserRepository;
 public class UserService implements UserServiceInterface{
 
     private final AppUserRepository appUserRepository;
+    private final ProjectRepository projectRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtService jwtService;
 
-    public UserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+    public UserService(AppUserRepository appUserRepository, ProjectRepository projectRepository, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
+        this.projectRepository = projectRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -82,6 +86,18 @@ public class UserService implements UserServiceInterface{
         }
 
         return new ProfileResponse(user.getUsername(), user.getEmail(), user.getRole());
+    }
+
+    @Override
+    @Transactional
+    public void deleteMyProfile(String email) {
+        AppUser user = appUserRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado");
+        }
+
+        projectRepository.deleteByUserId(user.getId());
+        appUserRepository.delete(user);
     }
 
 }

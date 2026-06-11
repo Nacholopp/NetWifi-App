@@ -1,18 +1,14 @@
-import AddIcon from '@mui/icons-material/Add'
-import SearchIcon from '@mui/icons-material/Search'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
 import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
-import MenuItem from '@mui/material/MenuItem'
 import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { ROUTES } from '../app/routes'
-
-const projects = []
+import { deleteProject } from '../features/projects/api/deleteProject'
+import { getMyProjects } from '../features/projects/api/getMyProjects'
 
 const primaryButtonSx = {
   borderRadius: 3,
@@ -26,14 +22,60 @@ const primaryButtonSx = {
   },
 }
 
-export function HomePage({ currentUser, onNavigate }) {
+export function HomePage({ currentUser, onNavigate, onOpenProject, onSessionExpired }) {
   const username = currentUser?.username ?? 'Invitado'
-  const hasProjects = projects.length > 0
+  const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const visibleProjects = currentUser ? projects : []
+  const hasProjects = visibleProjects.length > 0
+
+  useEffect(() => {
+    if (!currentUser) {
+      return
+    }
+
+    async function loadProjects() {
+      try {
+        setLoading(true)
+        setError('')
+        setProjects(await getMyProjects())
+      } catch (loadError) {
+        if (loadError.status === 401 || loadError.status === 403) {
+          onSessionExpired?.()
+          return
+        }
+
+        setError(loadError.message ?? 'No se pudieron cargar los proyectos')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProjects()
+  }, [currentUser, onSessionExpired])
 
   function handleNewProjectClick() {
     if (!currentUser) {
       onNavigate?.(ROUTES.login)
       return
+    }
+
+    onNavigate?.(ROUTES.projectEditor)
+  }
+
+  async function handleDeleteProject(projectId) {
+    try {
+      setError('')
+      await deleteProject(projectId)
+      setProjects((currentProjects) => currentProjects.filter((project) => project.id !== projectId))
+    } catch (deleteError) {
+      if (deleteError.status === 401 || deleteError.status === 403) {
+        onSessionExpired?.()
+        return
+      }
+
+      setError(deleteError.message ?? 'No se pudo borrar el proyecto')
     }
   }
 
@@ -67,23 +109,14 @@ export function HomePage({ currentUser, onNavigate }) {
             </Typography>
           </Box>
 
-          <Button variant='contained' startIcon={<AddIcon />} sx={primaryButtonSx} onClick={handleNewProjectClick}>
+          <Button variant='contained' sx={primaryButtonSx} onClick={handleNewProjectClick}>
             Nuevo Proyecto
           </Button>
         </Box>
 
-        <Box
-          sx={{
-            mt: 3,
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: '1fr auto' },
-            gap: 1.5,
-          }}
-        >
-
-        </Box>
-
         <Typography sx={{ mt: 3, fontWeight: 800, fontSize: '1.25rem' }}>Mis Proyectos</Typography>
+        {loading && <Typography sx={{ mt: 1, color: '#6b7280' }}>Cargando proyectos...</Typography>}
+        {error && <Typography sx={{ mt: 1, color: '#b91c1c' }}>{error}</Typography>}
 
         <Box
           sx={{
@@ -98,7 +131,43 @@ export function HomePage({ currentUser, onNavigate }) {
             justifyContent: hasProjects ? 'stretch' : 'start',
           }}
         >
-          {!hasProjects && (
+          {visibleProjects.map((project) => (
+            <Card key={project.id} sx={{ borderRadius: 3, border: '1px solid #e5e7eb' }}>
+              <CardActionArea onClick={() => onOpenProject?.(project)}>
+                <Box
+                  component='img'
+                  src={project.imageData}
+                  alt={project.projectName}
+                  sx={{
+                    width: '100%',
+                    aspectRatio: '1 / 1',
+                    display: 'block',
+                    backgroundColor: '#000000',
+                    objectFit: 'contain',
+                  }}
+                />
+                <CardContent>
+                  <Typography sx={{ fontWeight: 800 }}>{project.projectName}</Typography>
+                  <Typography sx={{ mt: 0.5, color: '#6b7280', fontSize: '.9rem' }}>
+                    {project.username}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+              <Box sx={{ px: 2, pb: 2 }}>
+                <Button
+                  variant='outlined'
+                  color='error'
+                  fullWidth
+                  onClick={() => handleDeleteProject(project.id)}
+                  sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 800 }}
+                >
+                  Borrar proyecto
+                </Button>
+              </Box>
+            </Card>
+          ))}
+
+          {!hasProjects && !loading && (
             <Card
               sx={{
                 borderRadius: 3,
@@ -118,20 +187,7 @@ export function HomePage({ currentUser, onNavigate }) {
                 }}
               >
                 <CardContent>
-                  <Box
-                    sx={{
-                      width: 58,
-                      height: 58,
-                      borderRadius: '50%',
-                      display: 'grid',
-                      placeItems: 'center',
-                      backgroundColor: '#f3f4f6',
-                      color: '#1f2937',
-                      margin: '0 auto',
-                    }}
-                  >
-                    <AddIcon />
-                  </Box>
+                  <Typography sx={{ fontSize: '2.4rem', fontWeight: 700, lineHeight: 1 }}>+</Typography>
                   <Typography sx={{ mt: 1.5, fontWeight: 800 }}>Nuevo Proyecto</Typography>
                   <Typography sx={{ mt: 0.7, color: '#6b7280', fontSize: '.95rem' }}>
                     Crea tu proyecto y empieza el analisis de red.

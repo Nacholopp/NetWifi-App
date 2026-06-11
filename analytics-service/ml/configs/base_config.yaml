@@ -1,0 +1,38 @@
+dataset:
+  index_path: outputs/dataset_index.json
+  root: ../DataSet5GHz
+  ap_counts: [1, 2, 3]
+  image_size: 256
+  invert_layout: false
+
+model:
+  in_channels: 2
+  out_channels: 1
+  base_channels: 32
+  use_sigmoid: true
+
+training:
+  batch_size: 8
+  epochs: 10
+  learning_rate: 0.0001
+  device: cuda
+  num_workers: 4
+  max_train_batches: null
+  max_val_batches: null
+
+evaluation:
+  split: test
+  batch_size: 8
+  checkpoint_path: checkpoints/best_model.pt
+  summary_path: outputs/evaluation_summary.json
+  max_batches: null
+
+inference:
+  split: test
+  checkpoint_path: checkpoints/best_model.pt
+  output_path: outputs/prediction_example.png
+  prediction_map_path: outputs/prediction_map.png
+
+paths:
+  checkpoint_dir: checkpoints
+  output_dir: outputs

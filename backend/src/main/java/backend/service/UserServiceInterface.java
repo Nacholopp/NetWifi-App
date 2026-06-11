@@ -17,6 +17,7 @@ public interface UserServiceInterface {
 
     ProfileResponse getMyProfile(String email);
 
+    void deleteMyProfile(String email);
 
 
 }

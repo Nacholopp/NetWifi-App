@@ -53,6 +53,7 @@ export function MainLayout({
   children,
   onNavigate,
   onLogout,
+  onDeleteAccount,
   currentRoute,
   currentUser,
   variant = 'default',
@@ -71,6 +72,11 @@ export function MainLayout({
   function handleLogout() {
     handleCloseMenu()
     onLogout?.()
+  }
+
+  function handleDeleteAccount() {
+    handleCloseMenu()
+    onDeleteAccount?.()
   }
 
   return (
@@ -128,6 +134,9 @@ export function MainLayout({
               </Button>
               <Menu anchorEl={anchorEl} open={menuOpen} onClose={handleCloseMenu}>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={handleDeleteAccount} sx={{ color: '#b91c1c' }}>
+                  Borrar cuenta
+                </MenuItem>
               </Menu>
             </>
           ) : (

@@ -50,6 +50,8 @@ export function TextFieldEmailUsername({
   onBlur,
   error,
   helperText,
+  sx,
+  ...props
 }) {
   return (
     <TextField
@@ -61,10 +63,12 @@ export function TextFieldEmailUsername({
       error={Boolean(error)}
       helperText={helperText}
       fullWidth
+      {...props}
       sx={{
         '& .MuiOutlinedInput-root': {
           borderRadius: 3,
         },
+        ...sx,
       }}
     />
   )

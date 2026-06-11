@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { loginUser } from '../api/loginUser'
 import { registerUser } from '../api/registerUser'
 import {
   emptyRegisterErrors,
@@ -101,8 +102,17 @@ export function useRegisterForm({ onSuccess } = {}) {
         email: form.email,
         password: form.password,
       })
+      const authData = await loginUser({
+        email: form.email,
+        password: form.password,
+      })
+
+      if (authData?.token) {
+        localStorage.setItem('authToken', authData.token)
+      }
+
       setSubmitSuccess('Usuario registrado correctamente.')
-      onSuccess?.(data ?? { username: form.username })
+      onSuccess?.(authData ?? data ?? { username: form.username })
     } catch (error) {
       setSubmitError(error.message ?? 'No se pudo completar la peticion')
     } finally {

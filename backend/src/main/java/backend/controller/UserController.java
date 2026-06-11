@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -50,5 +51,10 @@ public class UserController {
         return userService.getMyProfile(authentication.getName());
     }
 
+    @DeleteMapping("/users/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMe(Authentication authentication) {
+        userService.deleteMyProfile(authentication.getName());
+    }
 
 }
