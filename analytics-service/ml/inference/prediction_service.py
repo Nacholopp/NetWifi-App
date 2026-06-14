@@ -10,7 +10,7 @@ import torch
 import yaml
 from PIL import Image
 
-from ml.models.unet import UNet
+from ml.models.unet import UNet, build_unet_from_config
 from ml.utils.visualization import heatmap_panel
 
 
@@ -43,13 +43,7 @@ class PredictionService:
         return torch.device(device_name)
 
     def _load_model(self) -> UNet:
-        model_config = self.config["model"]
-        model = UNet(
-            in_channels=int(model_config["in_channels"]),
-            out_channels=int(model_config["out_channels"]),
-            base_channels=int(model_config["base_channels"]),
-            use_sigmoid=bool(model_config.get("use_sigmoid", True)),
-        ).to(self.device)
+        model = build_unet_from_config(self.config).to(self.device)
 
         checkpoint_path = self.service_root / self.config["inference"]["checkpoint_path"]
         checkpoint = torch.load(checkpoint_path, map_location=self.device)

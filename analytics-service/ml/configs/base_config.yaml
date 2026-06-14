@@ -8,16 +8,18 @@ dataset:
 model:
   in_channels: 2
   out_channels: 1
-  base_channels: 32
+  base_channels: 48
+  dropout: 0.05
   use_sigmoid: true
 
 training:
-  batch_size: 8
-  epochs: 10
+  batch_size: 6
+  epochs: 33
   learning_rate: 0.0001
   device: cuda
   num_workers: 4
-  max_train_batches: null
+  weight_decay: 0.00001
+  max_train_batches: 20000
   max_val_batches: null
 
 evaluation:

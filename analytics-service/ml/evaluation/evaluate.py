@@ -16,7 +16,7 @@ from tqdm import tqdm
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from ml.datasets.wifi_dataset import WiFiCoverageDataset
-from ml.models.unet import UNet
+from ml.models.unet import UNet, build_unet_from_config
 
 
 def resolve_path(path: str | Path, service_root: Path) -> Path:
@@ -66,13 +66,7 @@ def finish_stats(stats: dict[str, float]) -> dict[str, float]:
 
 
 def load_model(config: dict[str, Any], checkpoint_path: Path, device: torch.device) -> UNet:
-    model_config = config["model"]
-    model = UNet(
-        in_channels=int(model_config["in_channels"]),
-        out_channels=int(model_config["out_channels"]),
-        base_channels=int(model_config["base_channels"]),
-        use_sigmoid=bool(model_config.get("use_sigmoid", True)),
-    ).to(device)
+    model = build_unet_from_config(config).to(device)
 
     checkpoint = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(checkpoint["model_state_dict"])
