@@ -47,6 +47,7 @@
   "build": {
     "appId": "com.netwifi.desktop",
     "productName": "NetWifi",
+    "artifactName": "NetWifi.${ext}",
     "asarUnpack": [
       "electron/**/*.py"
     ],
