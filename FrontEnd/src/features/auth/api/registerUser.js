@@ -1,4 +1,4 @@
-﻿const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
+import { API_BASE_URL } from '../../../shared/api/config'
 
 function tryParseJson(text) {
   if (!text) return null
