@@ -20,6 +20,15 @@ def first_number(value):
     return float(number) if "." in number else int(number)
 
 
+def signed_number(value):
+    match = re.search(r"-?\d+(?:[.,]\d+)?", value or "")
+    if not match:
+        return None
+
+    number = match.group().replace(",", ".")
+    return float(number) if "." in number else int(number)
+
+
 def get_field(fields, *keys):
     for key in keys:
         value = fields.get(key)
@@ -97,7 +106,8 @@ def read_wifi():
     connected = str(state or "").strip().lower() in ("connected", "conectado")
     signal_percent = first_number(get_field(fields, "signal", "senal"))
     channel = first_number(get_field(fields, "channel", "canal"))
-    dbm = estimate_dbm(signal_percent)
+    rssi = signed_number(get_field(fields, "rssi"))
+    dbm = rssi if rssi is not None else estimate_dbm(signal_percent)
 
     return {
         "connected": connected,
@@ -106,7 +116,7 @@ def read_wifi():
         "signalPercent": signal_percent,
         "rssiDbm": dbm,
         "dbm": dbm,
-        "rssiEstimated": True,
+        "rssiEstimated": rssi is None,
         "rxMbps": first_number(
             get_field(fields, "receive rate (mbps)", "velocidad de recepcion (mbps)")
         ),
